@@ -256,7 +256,6 @@ tramp
 flycheck_*.el
 
 # server auth directory
-/server/
 
 
 ### C ###
