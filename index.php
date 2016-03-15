@@ -42,7 +42,8 @@
     }
 
     .foot {
-      margin-bottom: 0;
+      margin-bottom: 0px;
+      margin-top: 30px;
       padding-bottom: 10;
       text-align: center;
     }
@@ -56,13 +57,32 @@
       <p>Approved by the NSA...</p>
     </div>
   </div>
-  
   <script src='https://maps.googleapis.com/maps/api/js?v=3.exp'></script>
   <div id="canvas" style='overflow:hidden;height:440px;width:700px;'>
     <div id='gmap_canvas' style='height:440px;width:700px;'></div>
-    <style>#gmap_canvas img{max-width:none!important;background:none!important} #canvas {display:table; margin:5, auto, auto, ; } </style>
+    <style>#gmap_canvas img{max-width:none!important;background:none!important} #canvas {margin: auto;} </style>
   </div>
-  <script type='text/javascript'>function init_map(){var myOptions = {zoom:10,center:new google.maps.LatLng(49.2827291,-123.12073750000002),mapTypeId: google.maps.MapTypeId.ROADMAP};map = new google.maps.Map(document.getElementById('gmap_canvas'), myOptions);marker = new google.maps.Marker({map: map,position: new google.maps.LatLng(49.2827291,-123.12073750000002)});infowindow = new google.maps.InfoWindow({content:'<strong>My location</strong><br>Vancouver, BC<br>'});google.maps.event.addListener(marker, 'click', function(){infowindow.open(map,marker);});infowindow.open(map,marker);}google.maps.event.addDomListener(window, 'load', init_map);
+  <script type='text/javascript'>
+    function getMarkerFromLatLong(Lat, Long, Des)
+    {
+      var newMarker = new google.maps.Marker({map: map,position: new google.maps.LatLng(Lat, Long)});
+      var infowindow = new google.maps.InfoWindow({content: Des});
+      google.maps.event.addListener(newMarker, 'click', function(){infowindow.open(map,marker);});
+      infowindow.open(map,newMarker);
+      return newMarker;
+    }
+
+    function init_map()
+    {
+      var myOptions = {zoom:9,center:new google.maps.LatLng(49.2827291,-123.12073750000002),mapTypeId: google.maps.MapTypeId.ROADMAP};
+      map = new google.maps.Map(document.getElementById('gmap_canvas'), myOptions);
+      //marker = new google.maps.Marker({map: map,position: new google.maps.LatLng(49.2827291,-123.12073750000002)});
+      marker = getMarkerFromLatLong(49.2827291, -123.12073750000002, "Hello");
+      marker2 = getMarkerFromLatLong(50, -125, "Goodbye");
+      //marker2.setMap(map);
+    }
+
+    google.maps.event.addDomListener(window, 'load', init_map);
 /*
 var myOptions = { zoom:10,
                   center:new google.maps.LatLng(49.2827291,-123.12073750000002),
