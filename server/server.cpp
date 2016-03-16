@@ -80,11 +80,17 @@ int Server::Accept(Client * client)
     }
 
     std::cout << "Client Connect! Remote Address: " << inet_ntoa(client->connection.sin_addr) << std::endl;
-    if((client->file_desc = open(inet_ntoa(client->connection.sin_addr), O_WRONLY | O_APPEND | O_CREAT)) < 0)
+    if((client->file_desc = open(inet_ntoa(client->connection.sin_addr), O_WRONLY | O_APPEND | O_CREAT | O_EXCL)) < 0)
     {
-        std::cerr << "Failed to open file " << inet_ntoa(client->connection.sin_addr) << std::endl;
-        std::cerr << "errno: " << errno << std::endl;
-        return -1;
+        if(errno == EEXIST)
+        {
+            client->file_desc = open(inet_ntoa(client->connection.sin_addr), O_WRONLY | O_APPEND);       
+        }else
+        {
+           std::cerr << "Failed to open file " << inet_ntoa(client->connection.sin_addr) << std::endl;
+           std::cerr << "errno: " << errno << std::endl;
+          return -1;
+        }
     }
 
     // Look for an available slot in CLientList
@@ -153,7 +159,7 @@ int Server::Receive(int index)
         }
 
     }
-    std::cout << buf << std::endl;
+    printf("%s\n", buf);
     write(ClientList[index].file_desc, buf, strlen(buf));
     free(buf);
     return 0;
