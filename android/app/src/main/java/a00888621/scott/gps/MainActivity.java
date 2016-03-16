@@ -1,9 +1,15 @@
 package a00888621.scott.gps;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,5 +39,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void connectToServer(final View v) {
+        TextView ipInput = (TextView) findViewById(R.id.ipEnter);
+        if(!validateIP(ipInput.getText().toString())) {
+            Toast.makeText(this, "Invalid IP Address", Toast.LENGTH_LONG)
+                    .show();
+        } else {
+        }
+        Intent intent = new Intent(this, coordinatesActivity.class);
+        startActivity(intent);
+    }
+
+    private boolean validateIP(String ipAddr) {
+        return Patterns.IP_ADDRESS.matcher(ipAddr).matches();
     }
 }
