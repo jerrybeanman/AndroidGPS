@@ -1,5 +1,7 @@
 #include "server.h"
 #include <fcntl.h>
+#include <stdlib.h>
+#include <sys/stat.h>
 /*-----------------------------------------------------------------------------------------------
 --    Name:     [InitializeSocket]         Date:         [March 6th, 2016]
 --
@@ -80,11 +82,11 @@ int Server::Accept(Client * client)
     }
 
     std::cout << "Client Connect! Remote Address: " << inet_ntoa(client->connection.sin_addr) << std::endl;
-    if((client->file_desc = open(inet_ntoa(client->connection.sin_addr), O_WRONLY | O_APPEND | O_CREAT | O_EXCL)) < 0)
+    if((client->file_desc = open(inet_ntoa(client->connection.sin_addr), O_WRONLY | O_APPEND | O_CREAT | O_EXCL, 0777)) < 0)
     {
         if(errno == EEXIST)
         {
-            client->file_desc = open(inet_ntoa(client->connection.sin_addr), O_WRONLY | O_APPEND);       
+            client->file_desc = open(inet_ntoa(client->connection.sin_addr), O_WRONLY | O_APPEND, 0777);       
         }else
         {
            std::cerr << "Failed to open file " << inet_ntoa(client->connection.sin_addr) << std::endl;
@@ -92,7 +94,9 @@ int Server::Accept(Client * client)
           return -1;
         }
     }
-
+    char mode[] = "0777";
+    int in = strtol(mode, 0, 8); 
+    chmod(inet_ntoa(client->connection.sin_addr) ,in);
     // Look for an available slot in CLientList
     for(i = 0; i < FD_SETSIZE; i++)
     {
@@ -138,8 +142,7 @@ int Server::Receive(int index)
 
     buf = (char *)malloc(PACKET_LEN); 	        // allocates memory
 
-    while((BytesRead = recv (ClientList[index].socket, buf, PACKET_LEN, 0)) < PACKET_LEN)
-    {
+    BytesRead = recv (ClientList[index].socket, buf, PACKET_LEN, 0);
         // recv() failed
         if(BytesRead < 0)
         {
@@ -157,10 +160,9 @@ int Server::Receive(int index)
             close(ClientList[index].file_desc);
             return 1;
         }
-
-    }
-    printf("%s\n", buf);
-    write(ClientList[index].file_desc, buf, strlen(buf));
+    printf("Read %d bytes\n", BytesRead);
+    printf("Got message: %s\n", buf+2);
+    write(ClientList[index].file_desc, buf+2, strlen(buf));
     free(buf);
     return 0;
 }
