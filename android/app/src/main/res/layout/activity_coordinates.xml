@@ -13,7 +13,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Current Location"
-            android:id="@+id/test"
+            android:id="@+id/sentData"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"/>
 
@@ -23,7 +23,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Updated Location"
             android:id="@+id/textView"
-            android:layout_below="@+id/test"
+            android:layout_below="@+id/sentData"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="57dp"/>
 </RelativeLayout>

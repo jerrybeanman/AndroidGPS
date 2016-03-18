@@ -1,44 +1,41 @@
 package a00888621.scott.gps;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
-
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
+import android.widget.Toast;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class coordinatesActivity extends AppCompatActivity implements
         LocationListener {
-    static final int PORT = 7000;
-    static final String IP = "192.168.43.246";
+    SendData sendData;
     protected LocationManager locationManager;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coordinates);
+
         locationManager = (LocationManager) getSystemService
                 (Context.LOCATION_SERVICE);
-        
         if(locationManager == null) {
-            Log.e("Location manager error","Location Manager null");
-            return;
+            Toast.makeText(this, "Unable to activate the location manager, " +
+                    "please try again later", Toast.LENGTH_LONG).show();
+            finish();
         }
+        sendData = new SendData(getWindow().getDecorView()
+                .getRootView(), "52.37.233.202");
+
+        sendUserData(generateUserData());
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -68,11 +65,12 @@ public class coordinatesActivity extends AppCompatActivity implements
         criteria.setAccuracy(Criteria.ACCURACY_COARSE);
         List<String> enabledProviders = locationManager.getProviders(criteria,
                 true);
+
         if(!enabledProviders.isEmpty()) {
             try {
                 for (String providers: enabledProviders) {
 
-                    locationManager.requestLocationUpdates(providers, 1, 1,
+                    locationManager.requestLocationUpdates(providers, 1, 10,
                             this);
                 }
             } catch (SecurityException e) {
@@ -81,47 +79,25 @@ public class coordinatesActivity extends AppCompatActivity implements
         }
     }
 
-    private void sendLocationUpdate(String serverIP, String data) {
-        try {
-            Socket serverSocket = new Socket(serverIP, PORT);
-            serverSocket.setSendBufferSize(256);
-            DataOutputStream outputStream = new DataOutputStream(serverSocket
-                    .getOutputStream());
-            outputStream.writeUTF(data);
-            serverSocket.close();
-        } catch(IOException e) {
-            e.printStackTrace();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        disableUpdates();
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        final TextView testView = (TextView) findViewById(R.id.test);
         DateFormat format = DateFormat.getDateTimeInstance();
-       final String coordinateData = "Latitude: " + location.getLatitude() +
+         String coordinateData = "Latitude: " + location.getLatitude() +
                 "\nLongitude: " + location.getLongitude() + "\nLock time: " +
                 format.format(new Date(location.getTime())) + "\nProvider: " +
                 location.getProvider();
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                sendLocationUpdate(IP, coordinateData);
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute( final Void result ) {
-                testView.setText("Sent: " + coordinateData);
-            }
-        }.execute();
+        sendUserData(coordinateData);
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.d("Latitude","status");
+        Log.d("Latitude", "status");
     }
 
     @Override
@@ -132,5 +108,25 @@ public class coordinatesActivity extends AppCompatActivity implements
     @Override
     public void onProviderDisabled(String provider) {
         Log.d("Latitude","disable");
+    }
+
+    private void disableUpdates() {
+        try {
+            locationManager.removeUpdates(this);
+        } catch(SecurityException e) {
+            Log.e("Security error: ", e.getStackTrace().toString());
+        }
+    }
+
+    private void sendUserData(final String data) {
+        sendData.execute(data);
+    }
+
+    private String generateUserData() {
+        String userData = MainActivity.USERNAME_EXTRA + ":" + getIntent()
+                .getStringExtra(MainActivity.USERNAME_EXTRA) + " " +
+                MainActivity.PASSWORD_EXTRA + ":" + getIntent().getStringExtra
+                (MainActivity.PASSWORD_EXTRA);
+        return userData;
     }
 }

@@ -12,7 +12,9 @@ import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity {
-
+    public final static String IP_EXTRA = "IP Address";
+    public final static String USERNAME_EXTRA = "username";
+    public final static String PASSWORD_EXTRA = "password";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,12 +45,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void connectToServer(final View v) {
         TextView ipInput = (TextView) findViewById(R.id.ipEnter);
+        TextView username = (TextView) findViewById(R.id.usernameEnter);
+        TextView password = (TextView) findViewById(R.id.passwordEnter);
         if(!validateIP(ipInput.getText().toString())) {
             Toast.makeText(this, "Invalid IP Address", Toast.LENGTH_LONG)
                     .show();
         } else {
         }
+
         Intent intent = new Intent(this, coordinatesActivity.class);
+        intent.putExtra(IP_EXTRA, ipInput.getText().toString());
+        intent.putExtra(USERNAME_EXTRA, username.getText().toString());
+        intent.putExtra(PASSWORD_EXTRA, password.getText().toString());
         startActivity(intent);
     }
 
