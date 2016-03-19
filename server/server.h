@@ -67,6 +67,7 @@ class Server
         ------------------------------------------------------------------------------------------------*/
         int InitializeSocket(short port);
 
+        int Query(std::string& queryString);
         /*-----------------------------------------------------------------------------------------------
         --    Name:     [Accept]                   Date:         [March 6th, 2016]
         --
@@ -98,6 +99,8 @@ class Server
         int Receive(int index);
 
     private:
+        MYSQL *con;
+
         struct sockaddr_in     _ServerAddress;
 
 
