@@ -16,9 +16,23 @@
 --    Notes: Initialize ListeningSocket, set server b, Br server address to listeningSocket,
 --             call listen on ListeningSocket, and set the corresponding parameters to use select()
 ------------------------------------------------------------------------------------------------*/
-
 int Server::InitializeSocket(short port)
 {
+    con = mysql_init(NULL);
+
+    if (con == NULL) 
+    {
+      std::cerr << "sql error " << mysql_error(con) << std::endl;
+      return -1;
+    }
+
+    if (mysql_real_connect(con,"localhost", "root", "c0mmaudi0", NULL, 0, NULL, 0) == NULL) 
+    {
+      std::cerr << "sql error: " << mysql_error(con) << std::endl;
+      mysql_close(con);
+      return -1;
+    }
+
     int optval = -1;
     // Create a TCP streaming socket
     if ((ListeningSocket = socket(AF_INET, SOCK_STREAM, 0)) == -1 )
@@ -54,6 +68,17 @@ int Server::InitializeSocket(short port)
     FD_ZERO(&AllSet);
     FD_SET(ListeningSocket, &AllSet);
 
+    return 0;
+}
+
+int Server::Query(std::string& queryString)
+{
+    if (mysql_query(con, queryString.c_str())) 
+    {
+        std::cerr << "Invalide query" << std::endl;
+        return -1;
+    }
+    std::cout << "valid query" << std::endl;
     return 0;
 }
 
@@ -148,7 +173,13 @@ int Server::Receive(int index)
     }
     std::string ignore;
     std::istringstream iss;
+    std::string query;
     sscanf(buf+2, "%*s %s %*s %s %*s %s %*s %s", packet.name, packet.password, packet.latitude, packet.longtitude);
+    query +="SELECT * FROM users WHERE username=";
+    query += packet.name;
+    query += " AND password=";
+    query += packet.password;
+    this->Query(query);
     printf("Username: %s, Password: %s, Latitude: %s, Longtitude: %s\n", packet.name, packet.password, packet.latitude, packet.longtitude);
     printf("Read %d bytes\n", BytesRead);
     printf("Got message: %s\n", buf+2);

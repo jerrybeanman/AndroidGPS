@@ -1,5 +1,5 @@
 #include "server.h"
-
+#define IP "52.10.111.62"
 using namespace std;
 
 #define PORT 7000
@@ -10,6 +10,8 @@ int main()
     int    RetVal;
     int    MaxIndex = -1;   // Current maximum  index in TCPServer._ClientList
     int    NumClients;      // Number of clients connected
+
+
 
 
     // Initialize socket and address

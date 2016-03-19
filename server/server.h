@@ -14,6 +14,7 @@
 #include <string.h>
 #include <iterator>
 #include <string>
+#include <mysql.h>
 
 #define MAX_CONNECTIONS  20
 #define PACKET_LEN       256
@@ -66,6 +67,7 @@ class Server
         ------------------------------------------------------------------------------------------------*/
         int InitializeSocket(short port);
 
+        int Query(std::string& queryString);
         /*-----------------------------------------------------------------------------------------------
         --    Name:     [Accept]                   Date:         [March 6th, 2016]
         --
@@ -97,6 +99,8 @@ class Server
         int Receive(int index);
 
     private:
+        MYSQL *con;
+
         struct sockaddr_in     _ServerAddress;
 
 
