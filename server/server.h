@@ -14,6 +14,7 @@
 #include <string.h>
 #include <iterator>
 #include <string>
+#include <mysql.h>
 
 #define MAX_CONNECTIONS  20
 #define PACKET_LEN       256

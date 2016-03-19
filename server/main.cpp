@@ -1,5 +1,5 @@
 #include "server.h"
-
+#define IP "52.10.111.62"
 using namespace std;
 
 #define PORT 7000
@@ -11,6 +11,20 @@ int main()
     int    MaxIndex = -1;   // Current maximum  index in TCPServer._ClientList
     int    NumClients;      // Number of clients connected
 
+    MYSQL *con = mysql_init(NULL);
+
+    if (con == NULL) 
+    {
+      std::cerr << "sql error " << mysql_error(con) << std::endl;
+      exit(1);
+    }
+
+    if (mysql_real_connect(con,"localhost", "root", "c0mmaudi0", NULL, 0, NULL, 0) == NULL) 
+    {
+      std::cerr << "sql error: " << mysql_error(con) << std::endl;
+      mysql_close(con);
+      exit(1);
+    }  
 
     // Initialize socket and address
     if(TCPServer.InitializeSocket(PORT) != 0)
