@@ -1,4 +1,5 @@
     var arr = [];
+    var newestEntry;
     function pollFromDatabase()
     {
       $.ajax({
@@ -12,8 +13,53 @@
             });
           }
           flag = 1;
+          console.log("<<Initial poll>>");
           console.log(data);
           console.log(arr);
+          newestEntry = arr[arr.length - 1];
+        },
+        error: function (xhr, status, error) {
+          // check status && error
+          alert(xhr + "\n" + status + "\n" + error);
+        },
+      });
+    }
+
+    function updateMap()
+    {
+      setTimeout(grabNewestEntry, 2000);
+    }
+
+    function grabNewestEntry()
+    {
+      $.ajax({
+        type: "GET",
+        url: "grab_newest_user.php",
+        dataType: 'json',
+        success: function (data) {
+          for (var i = 0; i < data.length; i++) {
+            temp[i] = $.map(data[i], function (el) {
+              return el;
+            });
+          }
+          flag = 1;
+          console.log("<<Newest>>");
+          console.log(data);
+          console.log(temp);
+
+          if(newestEntry[1] !== temp[0][1])
+          {
+            console.log("Updated location");
+            /*
+            newestEntry = temp[0];
+            var newMarker = getMarkerFromLatLong(newestEntry[2], newestEntry[3], newestEntry[0]);
+            */
+          }
+          else
+          {
+            console.log("No recent update.");
+          }
+          
         },
         error: function (xhr, status, error) {
           // check status && error
