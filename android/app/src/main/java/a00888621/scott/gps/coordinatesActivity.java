@@ -1,3 +1,32 @@
+/*---------------------------------------------------------------------------------------
+--	Source File:		coordinatesActivity.java - Android application to send
+the users data to the web server to plot on google maps.
+--
+--	Methods:
+--				protected void onCreate(Bundle savedInstanceState)
+--              public boolean onCreateOptionsMenu(Menu menu)
+--              public boolean onOptionsItemSelected(MenuItem item)
+--              protected void onResume()
+--              protected void onPause()
+--              public void onLocationChanged(Location location)
+--              public void onProviderEnabled(String provider)
+--              public void onProviderDisabled(String provider)
+--              private void disableUpdates()
+--              private void sendUserData(final String data)
+--              private String generateUserData()
+--
+--
+--
+--	Date:			March 18, 2016
+--
+--	Revisions:		(Date and Description)
+--
+--	Designer:		Scott Plummer
+--
+--	Programmer:		Scott Plummer
+--
+--	Notes: The activity for getting the user location data.
+---------------------------------------------------------------------------------------*/
 package a00888621.scott.gps;
 
 import android.content.Context;
@@ -11,14 +40,32 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-import java.text.DateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class coordinatesActivity extends AppCompatActivity implements
         LocationListener {
-    SendData sendData;
     protected LocationManager locationManager;
+
+    /*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: onCreate
+--
+-- DATE: March 18, 2016
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Scott Plummer
+--
+-- PROGRAMMER: Scott Plummer
+--
+-- INTERFACE: protected void onCreate(Bundle savedInstanceState)
+--                                  savedInstanceState -- the state of the
+activity
+--
+-- RETURNS: void
+--
+-- NOTES: Creates the locationManager and sends the users username and
+password for website login
+----------------------------------------------------------------------------------------------------------------------*/
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coordinates);
@@ -30,12 +77,25 @@ public class coordinatesActivity extends AppCompatActivity implements
                     "please try again later", Toast.LENGTH_LONG).show();
             finish();
         }
-        sendData = new SendData(getWindow().getDecorView()
-                .getRootView(), "52.37.233.202");
-
-        sendUserData(generateUserData());
     }
-
+    /*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: onCreateOptionsMenu
+--
+-- DATE: March 18, 2016
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Scott Plummer
+--
+-- PROGRAMMER: Scott Plummer
+--
+-- INTERFACE: public boolean onCreateOptionsMenu(Menu menu)
+--                                  menu -- The menu to create
+--
+-- RETURNS: true
+--
+-- NOTES:
+----------------------------------------------------------------------------------------------------------------------*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -43,6 +103,24 @@ public class coordinatesActivity extends AppCompatActivity implements
         return true;
     }
 
+    /*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: onOptionsItemSelected
+--
+-- DATE: March 18, 2016
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Scott Plummer
+--
+-- PROGRAMMER: Scott Plummer
+--
+-- INTERFACE: public boolean onOptionsItemSelected(MenuItem item)
+--                                 item -- the item that was selected
+--
+-- RETURNS: The option item that was selected
+--
+-- NOTES:
+----------------------------------------------------------------------------------------------------------------------*/
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -58,9 +136,198 @@ public class coordinatesActivity extends AppCompatActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    /*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: onResume
+--
+-- DATE: March 18, 2016
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Scott Plummer
+--
+-- PROGRAMMER: Scott Plummer
+--
+-- INTERFACE:  protected void onResume()
+--
+-- RETURNS: void.
+--
+-- NOTES: Enables updates from the location manager
+----------------------------------------------------------------------------------------------------------------------*/
     @Override
     protected void onResume() {
         super.onResume();
+        enableUpdates();
+    }
+
+
+    /*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: onPause
+--
+-- DATE: March 18, 2016
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Scott Plummer
+--
+-- PROGRAMMER: Scott Plummer
+--
+-- INTERFACE:  protected void onPause()
+--
+-- RETURNS: void.
+--
+-- NOTES: Disables  updates from the location manager
+----------------------------------------------------------------------------------------------------------------------*/
+    @Override
+    protected void onPause() {
+        super.onPause();
+        disableUpdates();
+    }
+
+
+    /*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: onLocationChanged
+--
+-- DATE: March 18, 2016
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Scott Plummer
+--
+-- PROGRAMMER: Scott Plummer
+--
+-- INTERFACE:  public void onLocationChanged(Location location)
+--                                      location -- Stores the location info
+--
+-- RETURNS: void.
+--
+-- NOTES: Retrieves the location data and sends it to the server
+----------------------------------------------------------------------------------------------------------------------*/
+    @Override
+    public void onLocationChanged(Location location) {
+         String coordinateData = "latitude: " + location.getLatitude() +
+                " longitude: " + location.getLongitude();
+        sendUserData(generateUserData() + " " + coordinateData);
+    }
+
+    /*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: onStatusChanged
+--
+-- DATE: March 18, 2016
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Scott Plummer
+--
+-- PROGRAMMER: Scott Plummer
+--
+-- INTERFACE:   public void onStatusChanged(String provider, int status, Bundle extras)
+--                                          provider -- Name of the provider
+--                                          status -- type of status
+--                                          extras -- unused
+--
+-- RETURNS: void.
+--
+-- NOTES: Resets the location manager updates
+----------------------------------------------------------------------------------------------------------------------*/
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        disableUpdates();
+        enableUpdates();
+    }
+
+    /*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: onProviderEnabled
+--
+-- DATE: March 18, 2016
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Scott Plummer
+--
+-- PROGRAMMER: Scott Plummer
+--
+-- INTERFACE:   public void onProviderEnabled(String provider, int status, Bundle extras)
+--                                          provider -- Name of the provider
+--
+-- RETURNS: void.
+--
+-- NOTES: Resets the location manager updates
+----------------------------------------------------------------------------------------------------------------------*/
+    @Override
+    public void onProviderEnabled(String provider) {
+        disableUpdates();
+        enableUpdates();
+    }
+
+
+    /*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: onProviderDisabled
+--
+-- DATE: March 18, 2016
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Scott Plummer
+--
+-- PROGRAMMER: Scott Plummer
+--
+-- INTERFACE:   public void onProviderDisabled(String provider, int status, Bundle extras)
+--                                          provider -- Name of the provider
+--
+-- RETURNS: void.
+--
+-- NOTES: Resets the location manager updates
+----------------------------------------------------------------------------------------------------------------------*/
+    @Override
+    public void onProviderDisabled(String provider) {
+        disableUpdates();
+        enableUpdates();
+    }
+
+
+    /*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: disableUpdates
+--
+-- DATE: March 18, 2016
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Scott Plummer
+--
+-- PROGRAMMER: Scott Plummer
+--
+-- INTERFACE:    private void disableUpdates()
+--
+-- RETURNS: void.
+--
+-- NOTES: Disables the locations manager updates
+----------------------------------------------------------------------------------------------------------------------*/
+    private void disableUpdates() {
+        try {
+            locationManager.removeUpdates(this);
+        } catch(SecurityException e) {
+            Log.e("Security error: ", e.getStackTrace().toString());
+        }
+    }
+
+    /*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: enableUpdates
+--
+-- DATE: March 18, 2016
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Scott Plummer
+--
+-- PROGRAMMER: Scott Plummer
+--
+-- INTERFACE:    private void enableUpdates()
+--
+-- RETURNS: void.
+--
+-- NOTES: Enables the locations manager updates
+----------------------------------------------------------------------------------------------------------------------*/
+    private void enableUpdates() {
         Criteria criteria = new Criteria();
         criteria.setAccuracy(Criteria.ACCURACY_COARSE);
         List<String> enabledProviders = locationManager.getProviders(criteria,
@@ -79,53 +346,52 @@ public class coordinatesActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        disableUpdates();
-    }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        DateFormat format = DateFormat.getDateTimeInstance();
-         String coordinateData = "Latitude: " + location.getLatitude() +
-                "\nLongitude: " + location.getLongitude() + "\nLock time: " +
-                format.format(new Date(location.getTime())) + "\nProvider: " +
-                location.getProvider();
-        sendUserData(coordinateData);
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.d("Latitude", "status");
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        Log.d("Latitude", "enabled");
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        Log.d("Latitude","disable");
-    }
-
-    private void disableUpdates() {
-        try {
-            locationManager.removeUpdates(this);
-        } catch(SecurityException e) {
-            Log.e("Security error: ", e.getStackTrace().toString());
-        }
-    }
-
+    /*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: sendUserData
+--
+-- DATE: March 18, 2016
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Scott Plummer
+--
+-- PROGRAMMER: Scott Plummer
+--
+-- INTERFACE:    private void sendUserData(final String data)
+--                                  data -- location data to send
+--
+-- RETURNS: void.
+--
+-- NOTES: Starts the async task
+----------------------------------------------------------------------------------------------------------------------*/
     private void sendUserData(final String data) {
-        sendData.execute(data);
+        new SendData(getWindow().getDecorView()
+                .getRootView()).execute(getIntent().getStringExtra
+                (MainActivity.IP_EXTRA), data);
     }
 
+    /*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: generateUserData
+--
+-- DATE: March 18, 2016
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Scott Plummer
+--
+-- PROGRAMMER: Scott Plummer
+--
+-- INTERFACE:   private String generateUserData()
+--
+-- RETURNS: void.
+--
+-- NOTES: Retrieves the user data that was entered to send to the server
+----------------------------------------------------------------------------------------------------------------------*/
     private String generateUserData() {
-        String userData = MainActivity.USERNAME_EXTRA + ":" + getIntent()
+        String userData = MainActivity.USERNAME_EXTRA + ": " + getIntent()
                 .getStringExtra(MainActivity.USERNAME_EXTRA) + " " +
-                MainActivity.PASSWORD_EXTRA + ":" + getIntent().getStringExtra
+                MainActivity.PASSWORD_EXTRA + ": " + getIntent().getStringExtra
                 (MainActivity.PASSWORD_EXTRA);
         return userData;
     }
