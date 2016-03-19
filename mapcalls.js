@@ -40,6 +40,8 @@
       marker2 = getMarkerFromLatLong(50, -125, "Goodbye");
       marker3 = getMarkerFromLatLong(50, -125, "Goodbye");
       //marker2.setMap(map);
+
+      pollFromDatabase();
     }
 
     google.maps.event.addDomListener(window, 'load', init_map);
