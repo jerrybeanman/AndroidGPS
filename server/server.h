@@ -18,12 +18,17 @@
 #define MAX_CONNECTIONS  20
 #define PACKET_LEN       256
 
-
+struct Packet
+{
+    char name       [20];
+    char password   [20];
+    char latitude   [128];
+    char longtitude [128];
+};
 struct Client
 {
     int         socket;
     sockaddr_in connection;
-    int 		file_desc;;
 };
 
 class Server

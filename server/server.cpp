@@ -2,6 +2,7 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <sstream>
 /*-----------------------------------------------------------------------------------------------
 --    Name:     [InitializeSocket]         Date:         [March 6th, 2016]
 --
@@ -82,21 +83,7 @@ int Server::Accept(Client * client)
     }
 
     std::cout << "Client Connect! Remote Address: " << inet_ntoa(client->connection.sin_addr) << std::endl;
-    if((client->file_desc = open(inet_ntoa(client->connection.sin_addr), O_WRONLY | O_APPEND | O_CREAT | O_EXCL, 0777)) < 0)
-    {
-        if(errno == EEXIST)
-        {
-            client->file_desc = open(inet_ntoa(client->connection.sin_addr), O_WRONLY | O_APPEND, 0777);       
-        }else
-        {
-           std::cerr << "Failed to open file " << inet_ntoa(client->connection.sin_addr) << std::endl;
-           std::cerr << "errno: " << errno << std::endl;
-          return -1;
-        }
-    }
-    char mode[] = "0777";
-    int in = strtol(mode, 0, 8); 
-    chmod(inet_ntoa(client->connection.sin_addr) ,in);
+
     // Look for an available slot in CLientList
     for(i = 0; i < FD_SETSIZE; i++)
     {
@@ -107,7 +94,7 @@ int Server::Accept(Client * client)
         }
     }
 
-    // ClientList is full
+    // ClientList is 
     if(i == FD_SETSIZE)
     {
         std::cerr << "Too many clients to accept" << std::endl;
@@ -139,30 +126,32 @@ int Server::Receive(int index)
 {
     int BytesRead;
     char * buf;
-
+    Packet packet;
     buf = (char *)malloc(PACKET_LEN); 	        // allocates memory
 
     BytesRead = recv (ClientList[index].socket, buf, PACKET_LEN, 0);
-        // recv() failed
-        if(BytesRead < 0)
-        {
-            printf("recv() failed with errno: %d", errno);
-            return -1;
-        }
+    // recv() failed
+    if(BytesRead < 0)
+    {
+        printf("recv() failed with errno: %d", errno);
+        return -1;
+    }
 
-        // client disconnected
-        if(BytesRead == 0)
-        {
-            free(buf);
-            printf("Client %d has disconnected \n",  index+1);
-            close(ClientList[index].socket);
-            FD_CLR(ClientList[index].socket, &AllSet);
-            close(ClientList[index].file_desc);
-            return 1;
-        }
+    // client disconnected
+    if(BytesRead == 0)
+    {
+        free(buf);
+        printf("Client %d has disconnected \n",  index+1);
+        close(ClientList[index].socket);
+        FD_CLR(ClientList[index].socket, &AllSet);
+        return 1;
+    }
+    std::string ignore;
+    std::istringstream iss;
+    iss >> ignore >> packet.name >> ignore >> packet.password >> ignore >> packet.latitude >> ignore >> packet.longtitude;
+    //sscanf(buf, "Username: %s Password: %s Latitude: %s Longtitude: %s", packet.name, packet.password, packet.latitude, packet.longtitude);
     printf("Read %d bytes\n", BytesRead);
     printf("Got message: %s\n", buf+2);
-    write(ClientList[index].file_desc, buf+2, strlen(buf));
     free(buf);
     return 0;
 }
