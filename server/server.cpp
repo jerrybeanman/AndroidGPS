@@ -148,8 +148,7 @@ int Server::Receive(int index)
     }
     std::string ignore;
     std::istringstream iss;
-    iss >> ignore >> packet.name >> ignore >> packet.password >> ignore >> packet.latitude >> ignore >> packet.longtitude;
-    //sscanf(buf, "Username: %s Password: %s Latitude: %s Longtitude: %s", packet.name, packet.password, packet.latitude, packet.longtitude);
+    sscanf(buf+2, "Username: %s Password: %s Latitude: %s Longtitude: %s", packet.name, packet.password, packet.latitude, packet.longtitude);
     printf("Read %d bytes\n", BytesRead);
     printf("Got message: %s\n", buf+2);
     free(buf);
