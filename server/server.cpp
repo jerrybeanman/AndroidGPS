@@ -137,7 +137,7 @@ int Server::Receive(int index)
         return -1;
     }
 
-    // client disconnected
+    // client d
     if(BytesRead == 0)
     {
         free(buf);
@@ -148,7 +148,8 @@ int Server::Receive(int index)
     }
     std::string ignore;
     std::istringstream iss;
-    sscanf(buf+2, "Username: %s Password: %s Latitude: %s Longtitude: %s", packet.name, packet.password, packet.latitude, packet.longtitude);
+    sscanf(buf+2, "%*s %s %*s %s %*s %s %*s %s", packet.name, packet.password, packet.latitude, packet.longtitude);
+    printf("Username: %s, Password: %s, Latitude: %s, Longtitude: %s\n", packet.name, packet.password, packet.latitude, packet.longtitude);
     printf("Read %d bytes\n", BytesRead);
     printf("Got message: %s\n", buf+2);
     free(buf);
