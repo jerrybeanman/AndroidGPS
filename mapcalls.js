@@ -20,9 +20,7 @@
 
           for (var i = 0; i < arr.length; i++)
           {
-            var newMarker = getMarkerFromLatLong(arr[i][2], 
-                                 arr[i][3], 
-                                 arr[i][0] + " located here at <br/>" + arr[i][1]);
+            var newMarker = getMarkerFromLatLong(arr[i][2], arr[i][3], "<strong>" + arr[i][0] + "</strong> located here at <br/><i>" + arr[i][1] + "</i><br />Lat: " + arr[i][2] + "Long: " + arr[i][3]);
           }
         },
         error: function (xhr, status, error) {
@@ -32,13 +30,19 @@
       });
     }
 
+    function isNumber(number)
+    {
+      return !isNaN(parseFloat(number)) && isFinite(n);
+    }
+
     function updateMap()
     {
-      setTimeout(grabNewestEntry, 2000);
+      setInterval(grabNewestEntry, 1000);
     }
 
     function grabNewestEntry()
     {
+      var temp = [];
       $.ajax({
         type: "GET",
         url: "grab_newest_user.php",
@@ -49,10 +53,10 @@
               return el;
             });
           }
-          flag = 1;
-          console.log("<<Newest>>");
-          console.log(data);
-          console.log(temp);
+          //flag = 1;
+          //console.log("<<Newest>>");
+          //console.log(data);
+          //console.log(temp);
 
           if(newestEntry[1] !== temp[0][1])
           {
@@ -70,7 +74,7 @@
         },
         error: function (xhr, status, error) {
           // check status && error
-          alert(xhr + "\n" + status + "\n" + error);
+          //alert(xhr + "\n" + status + "\n" + error);
         },
       });
     }
@@ -89,12 +93,13 @@
       var myOptions = {zoom:9,center:new google.maps.LatLng(49.2827291,-123.12073750000002),mapTypeId: google.maps.MapTypeId.ROADMAP};
       map = new google.maps.Map(document.getElementById('gmap_canvas'), myOptions);
       //marker = new google.maps.Marker({map: map,position: new google.maps.LatLng(49.2827291,-123.12073750000002)});
-      marker = getMarkerFromLatLong(49.2827291, -123.12073750000002, "Hello");
-      marker2 = getMarkerFromLatLong(50, -125, "Goodbye");
-      marker3 = getMarkerFromLatLong(50, -125, "Goodbye");
+      marker = getMarkerFromLatLong(49.249838, -123.001424, "British Columbia Institute of Technology");
+      //marker2 = getMarkerFromLatLong(50, -125, "Goodbye");
+      //marker3 = getMarkerFromLatLong(50, -125, "Goodbye");
       //marker2.setMap(map);
 
       pollFromDatabase();
+      updateMap();
     }
 
     google.maps.event.addDomListener(window, 'load', init_map);

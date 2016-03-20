@@ -111,6 +111,7 @@ int InsertLocation(string username, string ip, string dev, string latitude, stri
   else 
   {
     cerr << "InsertLocation error: numRows = mysql_num_rows()" << endl;
+    return 0;
   }
   
   if(mRes)
