@@ -5,7 +5,7 @@
 CC=g++
 EXECUTABLE_NAME=Server
 FLAGS=-g -ggdb -Wall 
-LIBRARIES = -pthread 
+LIBRARIES = -pthread -lmysqlclient 
 S_FILES= server.cpp main.cpp
 OBJECT_FILES=$(S_FILES:.cpp=.o)
 META_FILES=$(S_FILES:.cpp=.cpp.meta)
