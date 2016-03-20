@@ -20,7 +20,7 @@
 
           for (var i = 0; i < arr.length; i++)
           {
-            var newMarker = getMarkerFromLatLong(arr[i][2], arr[i][3], "<strong>" + arr[i][0] + "</strong> located here at <br/><i>" + arr[i][1] + "</i><br />Lat: " + arr[i][2] + "Long: " + arr[i][3]);
+            var newMarker = getMarkerFromLatLong(arr[i][2], arr[i][3], "<strong>" + arr[i][0] + "</strong> using the device: " + arr[i][4] + " <br />was here at <i>" + arr[i][1] + "</i><br />with the ip address of: " + arr[i][5] + "<br />Lat: " + arr[i][2] + " Long: " + arr[i][3]);
           }
         },
         error: function (xhr, status, error) {
@@ -61,10 +61,10 @@
           if(newestEntry[1] !== temp[0][1])
           {
             console.log("Updated location");
-            /*
+            
             newestEntry = temp[0];
-            var newMarker = getMarkerFromLatLong(newestEntry[2], newestEntry[3], newestEntry[0]);
-            */
+            var newMarker = getMarkerFromLatLong(temp[0][2], temp[0][3], "<strong>" + temp[0][0] + "</strong> using the device: " + temp[0][4] + " <br />was here at <i>" + temp[0][1] + "</i><br />with the ip address of: " + temp[0][5] + "<br />Lat: " + temp[0][2] + " Long: " + temp[0][3]);
+             
           }
           else
           {

@@ -38,13 +38,6 @@ int Server::InitializeSocket(short port)
 		return -1;
 	}
 
-	if (mysql_real_connect(con,"localhost", "root", "c0mmaudi0", NULL, 0, NULL, 0) == NULL) 
-	{
-		std::cerr << "sql error: " << mysql_error(con) << std::endl;
-		mysql_close(con);
-		return -1;
-	}
-
 	int optval = -1;
 	// Create a TCP streaming socket
 	if ((ListeningSocket = socket(AF_INET, SOCK_STREAM, 0)) == -1 )
