@@ -17,7 +17,7 @@
             . $conn->connect_error);
         }
         
-        $sql = "SELECT  u.username, l.rec_time, l.latitude, l.longitude 
+        $sql = "SELECT  u.username, l.rec_time, l.latitude, l.longitude, l.dev_name, l.ip_address
                 FROM    location l
                 INNER JOIN    users u
                 ON u.user_id = l.user_id
