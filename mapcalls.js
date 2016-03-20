@@ -17,6 +17,13 @@
           console.log(data);
           console.log(arr);
           newestEntry = arr[arr.length - 1];
+
+          for (var i = 0; i < arr.length; i++)
+          {
+            getMarkerFromLatLong(arr[i][2], 
+                                 arr[i][3], 
+                                 arr[i][0] + " located here at <br/>" + arr[i][1]);
+          }
         },
         error: function (xhr, status, error) {
           // check status && error
