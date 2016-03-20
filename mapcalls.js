@@ -20,7 +20,7 @@
 
           for (var i = 0; i < arr.length; i++)
           {
-            getMarkerFromLatLong(arr[i][2], 
+            var newMarker = getMarkerFromLatLong(arr[i][2], 
                                  arr[i][3], 
                                  arr[i][0] + " located here at <br/>" + arr[i][1]);
           }

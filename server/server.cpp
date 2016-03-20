@@ -153,7 +153,7 @@ int Server::Receive(int index)
     char * buf;
     Packet packet;
     buf = (char *)malloc(PACKET_LEN); 	        // allocates memory
-
+    memset(buf, 0, PACKET_LEN);
     BytesRead = recv (ClientList[index].socket, buf, PACKET_LEN, 0);
     // recv() failed
     if(BytesRead < 0)
