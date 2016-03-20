@@ -34,12 +34,21 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.ByteOrder;
 import java.util.List;
 
 public class coordinatesActivity extends AppCompatActivity implements
@@ -384,15 +393,55 @@ password for website login
 --
 -- INTERFACE:   private String generateUserData()
 --
--- RETURNS: void.
+-- RETURNS: Users username, password, device name and ip address
 --
--- NOTES: Retrieves the user data that was entered to send to the server
+-- NOTES:
 ----------------------------------------------------------------------------------------------------------------------*/
     private String generateUserData() {
         String userData = MainActivity.USERNAME_EXTRA + ": " + getIntent()
                 .getStringExtra(MainActivity.USERNAME_EXTRA) + " " +
                 MainActivity.PASSWORD_EXTRA + ": " + getIntent().getStringExtra
-                (MainActivity.PASSWORD_EXTRA);
+                (MainActivity.PASSWORD_EXTRA) + " deviceName: " + Build
+                .MODEL + " deviceIP: " + getIPAddress();
         return userData;
+    }
+
+    /*------------------------------------------------------------------------------------------------------------------
+-- FUNCTION: getIPAddress
+--
+-- DATE: March 19, 2016
+--
+-- REVISIONS: (Date and Description)
+--
+-- DESIGNER: Scott Plummer
+--
+-- PROGRAMMER: Scott Plummer
+--
+-- INTERFACE:   private String getIPAddress()
+--
+-- RETURNS: The ip address
+--
+-- NOTES:
+----------------------------------------------------------------------------------------------------------------------*/
+    private String getIPAddress() {
+        WifiManager wifiManager = (WifiManager) this.getSystemService
+                (WIFI_SERVICE);
+        int ipAddress = wifiManager.getConnectionInfo().getIpAddress();
+
+        if (ByteOrder.nativeOrder().equals(ByteOrder.LITTLE_ENDIAN)) {
+            ipAddress = Integer.reverseBytes(ipAddress);
+        }
+
+        byte[] ipArray = BigInteger.valueOf(ipAddress).toByteArray();
+
+        String ipAddr;
+        try {
+            ipAddr = InetAddress.getByAddress(ipArray).getHostAddress();
+        } catch (UnknownHostException e) {
+            Log.e("Unknown host ", e.getStackTrace().toString());
+            ipAddr = null;
+        }
+
+        return ipAddr;
     }
 }
