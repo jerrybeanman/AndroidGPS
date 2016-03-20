@@ -24,7 +24,6 @@ package a00888621.scott.gps;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -119,8 +118,8 @@ public class SendData extends AsyncTask<String, Void, String> {
 ----------------------------------------------------------------------------------------------------------------------*/
     @Override
     protected void onPostExecute( final String result ) {
-        TextView sentData  = (TextView) rootView.findViewById(R.id.sentData);
-        sentData.setText("Sent: " + result);
+        //TextView sentData  = (TextView) rootView.findViewById(R.id.location);
+        //sentData.setText("Sent: " + result);
     }
 
     /*------------------------------------------------------------------------------------------------------------------

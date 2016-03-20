@@ -43,6 +43,9 @@ import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import java.math.BigInteger;
@@ -86,6 +89,11 @@ password for website login
                     "please try again later", Toast.LENGTH_LONG).show();
             finish();
         }
+
+        WebView webView = (WebView) findViewById(R.id.website);
+        webView.setWebViewClient(new WebViewClient());
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl("http://52.10.111.62");
     }
     /*------------------------------------------------------------------------------------------------------------------
 -- FUNCTION: onCreateOptionsMenu
