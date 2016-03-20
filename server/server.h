@@ -71,7 +71,6 @@ class Server
 
 	int UserAuth(std::string username, std::string password);
         int InsertLocation(std::string username, std::string ip, std::string dev, std::string latitude, std::string longitude);
-        int Query(std::string& queryString);
         /*-----------------------------------------------------------------------------------------------
         --    Name:     [Accept]                   Date:         [March 6th, 2016]
         --

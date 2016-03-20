@@ -30,7 +30,7 @@ int Server::InitializeSocket(short port)
 	if(conRet == NULL)
 	{
 		std::cerr << "Cannot connect to database." <<std:: endl;
-		return 0;
+		return -1;
 	} 
 	if (con == NULL) 
 	{
@@ -112,17 +112,6 @@ int Server::UserAuth(std::string username, std::string password)
 		return 0;
 	}
 	return 1;
-}
-
-int Server::Query(std::string& queryString)
-{
-	if (mysql_query(con, queryString.c_str())) 
-	{
-		std::cerr << "Invalide query" << std::endl;
-		return -1;
-	}
-	std::cout << "valid query" << std::endl;
-	return 0;
 }
 
 
@@ -279,7 +268,7 @@ int Server::Receive(int index)
 	std::string ignore;
 	std::istringstream iss;
 	std::string query;
-	sscanf(buf+2, "%*s %s %*s %s %*s %s %*s %s", packet.name, packet.password, packet.latitude, packet.longtitude);
+	sscanf(buf+2, "%*s %s %*s %s %*s %s %*s %s %*s %s %*s %s", packet.name, packet.password, packet.device, packet.ip, packet.latitude, packet.longtitude);
 	if(this->UserAuth(packet.name, packet.password))
 	{
 		this->InsertLocation(packet.name, packet.ip, packet.device, packet.latitude, packet.longtitude);
