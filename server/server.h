@@ -23,6 +23,8 @@ struct Packet
 {
     char name       [20];
     char password   [20];
+    char device     [20];
+    char ip         [20];
     char latitude   [128];
     char longtitude [128];
 };
