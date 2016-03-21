@@ -1,6 +1,20 @@
 <?php
-    // This php file selects the most recent users time, location, device and their ip_address, convert it to JSON data and push it back to our Client
-    
+/*---------------------------------------------------------------------------------------
+--  Source File:    grab_newest_user.php - PHP file to grab the latest entry from the
+--                                         location
+--
+--  Date:         March 19, 2016
+--
+--  Revisions:    March 20, 2016 (Tyler Trepanier) 
+--                    Final integration, allowed for continuous updates
+--
+--  Designer:     Tyler Trepanier
+--
+--  Programmer:   Tyler Trepanier
+--
+--  Notes: Single PHP file which grabs the newest client and returns it to the
+--  mapcalls.js function via JSON.
+---------------------------------------------------------------------------------------*/
     $servername = "localhost";
     $username = "root";
     $password = "c0mmaudi0";
