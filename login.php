@@ -1,7 +1,7 @@
 <?php
 
    /*-----------------------------------------------------------------------------------------------
---    Name:     [InitializeSocket]         Date:         [March 18th, 2016]
+--    Name:     [UserAuthentication]         Date:         [March 18th, 2016]
 --
 --    Designer: [Vivek Kalia]                Programmer:   [Vivek Kalia]
 --
