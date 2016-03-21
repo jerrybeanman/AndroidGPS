@@ -1,4 +1,5 @@
 .gradle
+android/.idea/*
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
