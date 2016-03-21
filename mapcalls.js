@@ -12,15 +12,16 @@
               return el;
             });
           }
-          flag = 1;
-          console.log("<<Initial poll>>");
-          console.log(data);
-          console.log(arr);
+
           newestEntry = arr[arr.length - 1];
 
           for (var i = 0; i < arr.length; i++)
           {
-            var newMarker = getMarkerFromLatLong(arr[i][2], arr[i][3], "<strong>" + arr[i][0] + "</strong> using the device: " + arr[i][4] + " <br />was here at <i>" + arr[i][1] + "</i><br />with the ip address of: " + arr[i][5] + "<br />Lat: " + arr[i][2] + " Long: " + arr[i][3]);
+            var newMarker = getMarkerFromLatLong(arr[i][2], arr[i][3], 
+              "<strong>" + arr[i][0] + "</strong> using the device: " + arr[i][4] 
+              + " <br />was here at <i>" + arr[i][1] 
+              + "</i><br />with the ip address of: " + arr[i][5] 
+              + "<br />Lat: " + arr[i][2] + " Long: " + arr[i][3]);
           }
         },
         error: function (xhr, status, error) {
@@ -30,16 +31,13 @@
       });
     }
 
-    function isNumber(number)
-    {
-      return !isNaN(parseFloat(number)) && isFinite(n);
-    }
-
+    // Update the map every second.
     function updateMap()
     {
       setInterval(grabNewestEntry, 1000);
     }
 
+    // Grab only one of the most recent updates
     function grabNewestEntry()
     {
       var temp = [];
@@ -53,12 +51,8 @@
               return el;
             });
           }
-          //flag = 1;
-          //console.log("<<Newest>>");
-          //console.log(data);
-          //console.log(temp);
 
-          if(newestEntry[1] !== temp[0][1])
+          if(newestEntry[1] !== temp[0][1]) // If we have a recent update
           {
             console.log("Updated location");
             
@@ -79,6 +73,7 @@
       });
     }
 
+    // Create a new marker using it's latitude, longitude and a description to put in the info box.
     function getMarkerFromLatLong(Lat, Long, Des)
     {
       var newMarker = new google.maps.Marker({map: map,position: new google.maps.LatLng(Lat, Long)});
@@ -88,30 +83,16 @@
       return newMarker;
     }
 
+    // Initialize the map and center it to BCIT.
     function init_map()
     {
-      var myOptions = {zoom:9,center:new google.maps.LatLng(49.2827291,-123.12073750000002),mapTypeId: google.maps.MapTypeId.ROADMAP};
+      var myOptions = {zoom:9,center:new google.maps.LatLng(49.249838,-123.001424),mapTypeId: google.maps.MapTypeId.ROADMAP};
       map = new google.maps.Map(document.getElementById('gmap_canvas'), myOptions);
-      //marker = new google.maps.Marker({map: map,position: new google.maps.LatLng(49.2827291,-123.12073750000002)});
       marker = getMarkerFromLatLong(49.249838, -123.001424, "British Columbia Institute of Technology");
-      //marker2 = getMarkerFromLatLong(50, -125, "Goodbye");
-      //marker3 = getMarkerFromLatLong(50, -125, "Goodbye");
-      //marker2.setMap(map);
 
       pollFromDatabase();
       updateMap();
     }
 
+    //Initialize the map on the website.
     google.maps.event.addDomListener(window, 'load', init_map);
-/*
-var myOptions = { zoom:10,
-                  center:new google.maps.LatLng(49.2827291,-123.12073750000002),
-                  mapTypeId: google.maps.MapTypeId.ROADMAP
-                  };
-map = new google.maps.Map(document.getElementById('gmap_canvas'), myOptions);
-marker = new google.maps.Marker({ map: map,
-                                  position: new google.maps.LatLng(49.2827291,-123.12073750000002)
-                                });
-infowindow = new google.maps.InfoWindow({content:'<strong>City Goes Here</strong>'});
-
-*/

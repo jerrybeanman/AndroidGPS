@@ -1,5 +1,5 @@
 <?php
-    // This php file select top 10 score from the Score table, convert it to JSON data and push it back to our Client
+    // This php file selects the most recent users time, location, device and their ip_address, convert it to JSON data and push it back to our Client
     
     $servername = "localhost";
     $username = "root";
