@@ -87,7 +87,7 @@ public class SendData extends AsyncTask<String, Void, String> {
         try {
             DataOutputStream outputStream = new DataOutputStream(serverSocket
                     .getOutputStream());
-            outputStream.writeUTF(params[1]);:
+            outputStream.writeUTF(params[1]);
             serverSocket.close();
         } catch(SocketException e) {
             e.printStackTrace();
