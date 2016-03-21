@@ -77,6 +77,20 @@ int Server::InitializeSocket(short port)
 }
 
 
+/*-----------------------------------------------------------------------------------
+--    Name:     [UserAuth]              Date:        [March 18th, 2016]
+--
+--    Designer: [Vivek Kalia]           Programmer:  [Vivek Kalia]
+--
+--    Interface: int UserAuth(string username, string password)
+--		 [username] Username to authenticate.
+-- 		 [password] Password for username/password combo.
+--
+--    @return: 0 on failure, 1 on success.
+--
+--    Notes: Checks database to authenticate the username/password combo
+--           that's been given. 
+--------------------------------------------------------------------------------------*/   
 int Server::UserAuth(std::string username, std::string password)
 {
 	int mStatus  = 0;
@@ -107,7 +121,24 @@ int Server::UserAuth(std::string username, std::string password)
 	return 1;
 }
 
-
+/*-----------------------------------------------------------------------------------------
+--     Name:     [InsertLocation]          Date:        [March 18th, 2016]
+--
+--     Designer: [Vivek Kalia]             Progammer:   [Vivek Kalia]
+--
+--     Interface: int InsertLocation( string username, string ip, string dev, string latitude, string longitude )
+--		  [username] Username of person we are traciking.
+--		  [ip] IP address of person we are tracking.
+--		  [dev] Device name of person we are tracking.
+--		  [latitude] Latitude co-ordinates of person we are tracking.
+--		  [longitude] Longitude co-ordinates of person wea re tracking.
+--
+--     @return 0 on failure, 1 on success.
+--
+--     Notes: Inserts location data of specific person that has connected to the server.
+--	      Requires us to use a join on users and location table as to get the user_id for
+--	      the specific username to find the specific users locations.
+------------------------------------------------------------------------------------------*/
 int Server::InsertLocation(std::string username, std::string ip, std::string dev, std::string latitude, std::string longitude)
 {
 	std::string getUserIDQuery = "SELECT user_id FROM users WHERE username='" + username + "'";
